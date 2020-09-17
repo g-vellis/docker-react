@@ -1,0 +1,22 @@
+# base image which to inherit/start from
+FROM node:alpine
+
+# we then setup a working directory
+WORKDIR "/app"
+
+# we  copy our package.json to the current working directory (of "/app")
+COPY package.json .
+# and then we run the npm install
+RUN npm install
+
+#  after we install all of our dependencies, will then copy over everything else from our project directory.
+COPY . .
+
+# And then finally we can run our command to start up our project with CMD, and then 
+# inside of our square braces (i.e. [] ), we will say: npm run start 
+#
+# To ovveride this Command, we should insert, at runtime, at the end
+# of the following command, the overriding command: 
+# docker run <container id> npm start test
+#
+CMD ["npm", "run", "start"]

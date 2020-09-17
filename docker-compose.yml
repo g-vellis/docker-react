@@ -1,0 +1,48 @@
+# http://yaml-online-parser.appspot.com
+version: "3"
+services:
+   # we list all availablse services - i.e Containers
+   # web Container
+   web:
+      # the location of the Dockerfile we are going to use to create this initial Container
+      build: #.
+         # this context option specifies where
+         # we want all the files and folders
+         # for this Image to be pulled from.
+         context: .
+         dockerfile: Dockerfile.dev
+      ports:
+         # port outside the Contyainer : port Inside the Container
+         - "3000:3000"
+      volumes:
+         - /app/node_modules
+         - ".:/app"
+      # lines below are equivalent to -it in Dockerfile
+      stdin_open: true # docker run -i
+      tty: true
+   # tests Container (overrides the default start command specified in the Dockerfile.dev)
+   tests:
+      build:
+         context: .
+         dockerfile: Dockerfile.dev
+      volumes:
+         # Do not try to map a folder up against
+         #  '/app/node_modules' inside the Container.
+         - /app/node_modules
+         # . stands for the 'pwd'
+         # We want to map the current folder outside of the Container (i.e. . => all inside the project base dir)
+         # to the /app folder inside the Container.
+         - ".:/app"
+      # lines below are equivalent to -it in Dockerfile
+      stdin_open: true # docker run -i
+      tty: true
+
+      # we override the starting command (i.e. npm run start) with npm run test
+      command:
+         ["npm", "run", "test"]
+
+         # docker-compose up <=> docker run -it -p 3000:3000 -v $(pwd):/app -v node_modules <image id>
+# volume:
+# setting up that volume mount, any time that the Docker Container
+#  looks into the /app folder, it is essentially going to get
+# a reference, back to all these local files we have on our machine.
