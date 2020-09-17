@@ -1,0 +1,97 @@
+# https://www.udemy.com/course/docker-and-kubernetes-the-complete-guide/learn/lecture/11437124#questions
+
+language: generic
+
+# The first thing we are going to do is: "sudo: required";
+# anytime that we want to make use of Docker, we need
+# to have super user permissions.
+# And "sudo: required" says:
+# "Hey Travis, we need super user level permissions"
+# to execute this build.
+sudo: required
+services:
+   # 1. Tell Travis: we need a copy of Docker running.
+   #
+   # Specifies that we need Docker CLI pre-installed.
+   # By adding this in, Travis CLI is going to automatically
+   # install a copy of Docker into our little running container.
+   - docker
+
+# before_install section is going to have a series of different commands
+# that get executed before our tests are run.
+#
+# So, you can imagine anything we list right here,
+# as being some series of steps or some series of setup
+# that needs to occur:
+#   -  before we start to either DEPLOY our PROJECT, or
+#   -  before we start to RUN our TESTS.
+before_install:
+   # 2. Build our Image using Dockerfile.dev
+   #
+   # We want to attempt to build our Docker Image before the tests run.
+   # Below is the command that should be executed to build our Docker Image.
+   #
+   # docker build . -> returns the id of the Image that was generated.
+   # So, now in the steps below, we could refer to the Image that is created
+   # by saying gvellis/docker-react (we  will not have to copy/paste the generated  <image id> arround - this is an automated process).
+   #
+   #                                      Our non-default Dockerfile we want to be used
+   #                                      in order for the Image to be generated.
+   #              we define               |
+   #              a tag in order to be    |                 We set the build context.
+   #              able to reference the   |                 which essentially means,
+   #              generated Image in      |                 use the current directory
+   #              subsequent steps        |                 when figuring out what to do.
+   #              |                       |                 |
+   #              |  e.g. my Docker       |                 |
+   #              |  username             |                 |
+   #              |  |       e.g.the      |                 |
+   #              |  |       GitHub repo  |                 |
+   #              |  |       name         |                 |
+   #              |  |       |            |                 |
+   - docker build -t gvellis/docker-react -f Dockerfile.dev .
+#  - docker build -t TESTME -f Dockerfile.dev .  would also do the job.
+
+# 3. Tell Travis how to run our test suite.
+#    For this purpose we need to add a new section, called "script".
+#    This section is supposed to contain all the different commands
+#    that need to be executed to actually run our test suite.
+script:
+   # Travis CI is going to be watching the output of each of these commands,
+   # and from each command, if it ever gets a return status code other than 0,
+   # Travis is going to assume that our build failed (i.e. )that our tests failed to run properly),
+   # and it's going to assume that our code is essentially broken.
+   #
+   # So, in order to actually run our tests, we are going to use the same Docker command
+   # that we use to start up our Container out of that Image and run the tests inside of it.
+   #
+   #
+   # Any time we run our test suite on Travis CI, Travis is going to assume that our test suite runs
+   # and then exits automatically, and he essentially says: "OK either successfully ran all tests",
+   # or something wrong just occurred.
+   # However, the default behavior of npm run test is to run our test suite one time,
+   # and then present us with a menu that says: "OK well you know I'm not going to sit here
+   # and wait for you to tell me whether you want to do some more tests, or filter, or do
+   # whatever else. That is, it  does not finish as soon as it runs the tests.
+   # So, the default "npm run test" command, just kind of hangs there and never exits, ever.
+   # And so, if we ran this on Travis CI, Travis would say: "well you know it's been like
+   # 30 days and I'm still waiting here for the results of "npm run test"!":P
+   # To work around this and make sure that the test suite automatically exits (the instant
+   # that the first run is completed), we are going to add on a little additional command up here:
+   #  -- --coverage
+   #
+   #                                            We override the default command,
+   #                                            by saying: "npm run test".
+   #                                            |
+   #                       the Image id which   |
+   #                       we do not have to    |
+   #                       find as we used a    |
+   #                       tag in the prev.     |
+   #                       step                 |             Flag to npm run tests so as to exit
+   #                       |                    |             as soon as the the first tests run
+   #                       |                    |             is completed.
+   #                       |                    |             | REPLACED BY: -e CI=true
+   - docker run -e CI=true gvellis/docker-react npm run test # -- --coverage
+
+
+   # 4. Tell Travis how to deploy our code to AWS.
