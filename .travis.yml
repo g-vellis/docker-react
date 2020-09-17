@@ -91,7 +91,6 @@ script:
    #                       |                    |             as soon as the the first tests run
    #                       |                    |             is completed.
    #                       |                    |             | REPLACED BY: -e CI=true
-   - docker run -e CI=true gvellis/docker-react npm run test # -- --coverage
-
+   - docker run -e CI=true gvellis/docker-react npm run test -- --coverage
 
    # 4. Tell Travis how to deploy our code to AWS.
