@@ -111,7 +111,7 @@ deploy:
    #
    # Now, we are going to still provide a lot of other options
    # in here, as well, to just provide some further customization.
-   provider: elasticbeanstalk
+   provider: "elasticbeanstalk"
 
    # The next one we are going to provide is: "region".
    # Now, "region" is going to be a little bit of a tough one,
@@ -126,136 +126,133 @@ deploy:
    # to find out what that region is.
    region: "us-east-2"
 
-
    # Then, we are going to add in a couple other options.
    # Now, we are going to specify the name of our app.
    # Now, the name of the app is the same name that you
    # had created back over on the elasticbeanstalk dashboard.
-    app:  "docker-react"
+   app: "docker-react"
 
-    # The next configuration piece we are going to add in, 
-    # is the "environment" name,
-    # e.g. DockerReact-env
-    # which can be found in the elasticbeanstalk dashboard.
-    #
-    # In AWS terms, the actual app that is running inside of AWS,
-    # is not really referred to as an app but instead it is referred
-    # to as an Environment.
-    env: "DockerReact-env"
+   # The next configuration piece we are going to add in,
+   # is the "environment" name,
+   # e.g. DockerReact-env
+   # which can be found in the elasticbeanstalk dashboard.
+   #
+   # In AWS terms, the actual app that is running inside of AWS,
+   # is not really referred to as an app but instead it is referred
+   # to as an Environment.
+   env: "DockerReact-env"
 
-    # Now, the next piece of configuration here is going to be 
-    # just a little bit nastier than the two we have just
-    # went through.
-    # We are going to put in a "bucket_name". 
-    # So, when Travis decides to deploy your codebase, it is 
-    # going to take all the files inside of your GitHub repository,
-    # it is going to zip them all up into one single file,
-    # and then it is going to copy all them over to an S3 bucket, 
-    # which is essentially a hard drive running on AWS.
-    # 
-    # Once Travis CI copies all those files over to S3 bucket, 
-    # Travis CI  is then going to essentially poke at a 
-    # "elasticbeanstalk" and say: "Hey I just uploaded this 
-    # new zip file"; use that to re-deploy your application. 
-    #
-    # So, we need to provide the name of the bucket that 
-    # Travis CI is going to put our zip file into.
-    #
-    # The good news here is that an a S3 bucket has been
-    # automatically generated for you already, when you initially 
-    # created the elasticbeanstalk instance.
-    #
-    # In AWS we search for: "S3 scalable storage in the cloud".
-    # In the displayed S3 list, you should see one called: 
-    # elasticbeanstalk- and then the name of the region that 
-    # your elasticbeanstalk was placed in. 
-    bucket_name: "elasticbeanstalk-us-east-2-736749029387"
-    
-    # And then, we are going to also do the "bucket_path". 
-    #
-    # So, the S3 bucket right above, is holding all these different files.
-    # It gets reused for all of the different elasticbeanstalk environments 
-    # that you create. 
-    # So, inside this S3 bucket, that is holding all these different files,
-    # I am going to be looking for the folder that is essentially 
-    # the name of my project.
-    #
-    # Now, when you first create your elasticbeanstalk instance, 
-    # chances are it is not going to create a folder by default automatically. 
-    # That folder is only going to be created the first time 
-    # that you do a deploy.
-    # So, by default the bucket path that you are supposed to use 
-    # is going to be exactly equal to the app name. 
-    # So, we use the same value we used for the "app"  property. 
-    bucket_path: "docker-react"
+   # Now, the next piece of configuration here is going to be
+   # just a little bit nastier than the two we have just
+   # went through.
+   # We are going to put in a "bucket_name".
+   # So, when Travis decides to deploy your codebase, it is
+   # going to take all the files inside of your GitHub repository,
+   # it is going to zip them all up into one single file,
+   # and then it is going to copy all them over to an S3 bucket,
+   # which is essentially a hard drive running on AWS.
+   #
+   # Once Travis CI copies all those files over to S3 bucket,
+   # Travis CI  is then going to essentially poke at a
+   # "elasticbeanstalk" and say: "Hey I just uploaded this
+   # new zip file"; use that to re-deploy your application.
+   #
+   # So, we need to provide the name of the bucket that
+   # Travis CI is going to put our zip file into.
+   #
+   # The good news here is that an a S3 bucket has been
+   # automatically generated for you already, when you initially
+   # created the elasticbeanstalk instance.
+   #
+   # In AWS we search for: "S3 scalable storage in the cloud".
+   # In the displayed S3 list, you should see one called:
+   # elasticbeanstalk- and then the name of the region that
+   # your elasticbeanstalk was placed in.
+   bucket_name: "elasticbeanstalk-us-east-2-736749029387"
 
-    # The very last thing that I will do right now is,
-    # to deploy the application when the master branch, and only that,
-    # gets some new code. 
-    # So, this essentially means: anytime we push code to branch "master",
-    # that is the time to deploy. 
-    on:
-        branch: "master"
+   # And then, we are going to also do the "bucket_path".
+   #
+   # So, the S3 bucket right above, is holding all these different files.
+   # It gets reused for all of the different elasticbeanstalk environments
+   # that you create.
+   # So, inside this S3 bucket, that is holding all these different files,
+   # I am going to be looking for the folder that is essentially
+   # the name of my project.
+   #
+   # Now, when you first create your elasticbeanstalk instance,
+   # chances are it is not going to create a folder by default automatically.
+   # That folder is only going to be created the first time
+   # that you do a deploy.
+   # So, by default the bucket path that you are supposed to use
+   # is going to be exactly equal to the app name.
+   # So, we use the same value we used for the "app"  property.
+   bucket_path: "docker-react"
 
-    # Now, the last thing we have to add in here is, a set of API keys 
-    # that are going to give access to our AWS account over to Travis CI.
-    # We need to add our AWS variables to the deploy script of the .travis.yml file. 
-    # Otherwise, we will get an error when Travis attempts to run our code.
-    #
-    # So, the last thing we do is generate that set of API keys, and then 
-    # enter them into this travis.yml script. 
-    #
-    # So, I will get started by opening up my AWS console and then find 
-    # the "services" tab at the top, and I am going to search for "IAM".
-    # "AIM" is a service that is used to manage API keys that can be used 
-    # by outside services.
-    # On the left hand side, we are going to find the section of "users", 
-    # because we are essentially going to get generate a new user 
-    # that is going to be used by Travis CI. 
-    # then at the top of fine add user and then I'll provide a user.
-    # I am going to give a descriptive name, 
-    #               e.g.: "docker-react-travis-ci"
-    # and then underneath it, I am going to give programmatic access only. 
-    #
-    # The set of API keys that we are going to generate here are only going 
-    # to be used by Travis CI through network requests. Travis CI is never
-    # going to be making direct use of the AWS management console. 
-    # Then, in the permissions tab, we are going to select "Atach existing policies".
-    #
-    # These "policies" are essentially permissions. We are granting permissions 
-    # to this new user that we are creating. 
-    # So, right now we are essentially listing out all the different things 
-    # that this new user is going to have the ability to do. 
-    #
-    #
-    # In particular, we want to make sure that this new user has the ability 
-    # to deploy your application to elasticbeanstalk; So, I'm going to search for: 
-    # "beanstalk".
-    # We  select: "AWSElasticBeanstalkFullAccess". 
-    #
-    # And then, create user. 
-    #
-    # That will create a user and generate a set of API keys that can be used by 
-    # Travis CI to deploy our application. 
-    #
-    # !!!!!!!!!!
-    # The "secret access key" that has been generated is only going to be shown 
-    # to you exactly one time. 
-    #
-    # So, we are going to now use the Access Key ID and the secret access key.
-    # Now, one quick thing, we do not want to take those keys and put them directly 
-    # into our travis.yml file !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    #
-    # Remember!!! Right now, our GitHub repository is entirely public. So, 
-    # if we put those AWS keys into our repo and then push that up to Github,
-    # everyone in the world is going to have access to our AWS account.
-    # Instead, we are going to make use of a feature of environment secrets 
-    # provided by Travis CI (we  set the  Environemnt Variables  below and set
-    # the corresponding values generated by AWS).
-    #
-    #              get it from the Travis local environment configuration
-    #              |
-    access_key_id: $AWS_ACCESS_KEY
-    secret_access_key: $AWS_SECRET_KEY 
+   # The very last thing that I will do right now is,
+   # to deploy the application when the master branch, and only that,
+   # gets some new code.
+   # So, this essentially means: anytime we push code to branch "master",
+   # that is the time to deploy.
+   on:
+      branch: "master"
 
-# comment
+   # Now, the last thing we have to add in here is, a set of API keys
+   # that are going to give access to our AWS account over to Travis CI.
+   # We need to add our AWS variables to the deploy script of the .travis.yml file.
+   # Otherwise, we will get an error when Travis attempts to run our code.
+   #
+   # So, the last thing we do is generate that set of API keys, and then
+   # enter them into this travis.yml script.
+   #
+   # So, I will get started by opening up my AWS console and then find
+   # the "services" tab at the top, and I am going to search for "IAM".
+   # "AIM" is a service that is used to manage API keys that can be used
+   # by outside services.
+   # On the left hand side, we are going to find the section of "users",
+   # because we are essentially going to get generate a new user
+   # that is going to be used by Travis CI.
+   # then at the top of fine add user and then I'll provide a user.
+   # I am going to give a descriptive name,
+   #               e.g.: "docker-react-travis-ci"
+   # and then underneath it, I am going to give programmatic access only.
+   #
+   # The set of API keys that we are going to generate here are only going
+   # to be used by Travis CI through network requests. Travis CI is never
+   # going to be making direct use of the AWS management console.
+   # Then, in the permissions tab, we are going to select "Atach existing policies".
+   #
+   # These "policies" are essentially permissions. We are granting permissions
+   # to this new user that we are creating.
+   # So, right now we are essentially listing out all the different things
+   # that this new user is going to have the ability to do.
+   #
+   #
+   # In particular, we want to make sure that this new user has the ability
+   # to deploy your application to elasticbeanstalk; So, I'm going to search for:
+   # "beanstalk".
+   # We  select: "AWSElasticBeanstalkFullAccess".
+   #
+   # And then, create user.
+   #
+   # That will create a user and generate a set of API keys that can be used by
+   # Travis CI to deploy our application.
+   #
+   # !!!!!!!!!!
+   # The "secret access key" that has been generated is only going to be shown
+   # to you exactly one time.
+   #
+   # So, we are going to now use the Access Key ID and the secret access key.
+   # Now, one quick thing, we do not want to take those keys and put them directly
+   # into our travis.yml file !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+   #
+   # Remember!!! Right now, our GitHub repository is entirely public. So,
+   # if we put those AWS keys into our repo and then push that up to Github,
+   # everyone in the world is going to have access to our AWS account.
+   # Instead, we are going to make use of a feature of environment secrets
+   # provided by Travis CI (we  set the  Environemnt Variables  below and set
+   # the corresponding values generated by AWS).
+   #
+   #              get it from the Travis local environment configuration
+   #              |
+   access_key_id: $AWS_ACCESS_KEY
+   secret_access_key: $AWS_SECRET_KEY
