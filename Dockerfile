@@ -7,8 +7,12 @@
 # The sole purpose of this phase (i.e. 'builder'), is 
 #   - to install dependencies, and 
 #   - build our application. 
+
+# !!! IMPORTANT NOTE:
+# Due to an AWS  bug, we used the below step as unamed (i.e. without using 
+# the leyword 'as' - see the next line), therefore we will be referring to it 
+# by its default id: i.e. '0' , instead of an alias. 
 #FROM node:alpine as builder
-# Due to AWS  bug  we used it as unamed and we will refer to it by its default id: i..e 0.
 FROM node:alpine
 
 WORKDIR '/app'
@@ -56,7 +60,7 @@ RUN npm run build
 
 # The RUN Phase
 FROM  nginx
-# required by beanstalk to expose  a port
+# required by AWS beanstalk to expose a port
 EXPOSE 80
 
 # we just copy over just the bare minimum, just the stuff we care about, from
