@@ -7,7 +7,9 @@
 # The sole purpose of this phase (i.e. 'builder'), is 
 #   - to install dependencies, and 
 #   - build our application. 
-FROM node:alpine as builder
+#FROM node:alpine as builder
+# Due to AWS  bug  we used it as unamed and we will refer to it by its default id: i..e 0.
+FROM node:alpine
 
 WORKDIR '/app'
 
@@ -54,6 +56,8 @@ RUN npm run build
 
 # The RUN Phase
 FROM  nginx
+# required by beanstalk to expose  a port
+EXPOSE 80
 
 # we just copy over just the bare minimum, just the stuff we care about, from
 # the previous step. 
@@ -70,7 +74,9 @@ FROM  nginx
 # COPY sth FROM a different phase => we use --from 
 # i.e. I want to copy over sth from that other phase that we we're just working on.
 #                    the folder to copy   the nginx-specific folder to place comntent into to be auto served. 
-COPY --from=builder /app/build /usr/share/nginx/html
+#COPY --from=builder /app/build /usr/share/nginx/html
+# due to AWS bug, we refer  to the previous build by its default id, i.e. 0.
+COPY --from=0 /app/build /usr/share/nginx/html
 
 # It turns out that the default command of the nginx Container or thenginx Image 
 # is going to start up nginx for us.
